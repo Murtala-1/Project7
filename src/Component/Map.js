@@ -3,7 +3,7 @@ import mapboxgl from 'mapbox-gl';
 import ReactMapGL, { Marker, Popup } from 'react-map-gl';
 import Data from './Data';
 
-mapboxgl.accessToken =
+mapboxgl.accessToken = 
   'pk.eyJ1IjoiYWtpbnllbWkxNDcyIiwiYSI6ImNrMXoyNW92dDBsZ2UzaG12Mm9xNGhmdGcifQ.RlIm2uIf_39XH1hbaG4C7A';
 class MapContainer extends React.Component {
   state = {
@@ -13,57 +13,86 @@ class MapContainer extends React.Component {
     loading: true,
     restuarant: [],
     userLocation: {},
+    data: Data,
+   
   };
-  handleClick = (map, ev) => {
-    const zoom = [map.transform.tileZoom + map.transform.zoomFraction];
-    this.setState({
-      zoom: map.getCenter()
-    });
-  };
+
+set = (e) => {
+  this.setState( prev => ({
+    data: [
+      ...prev.data, 
+      {
+        restaurantName: '',
+        address: '',
+        lat: e.lngLat.wrap().lat,
+        lng: e.lngLat.wrap().lng,
+        picURL:'',
+        ratings: []
+      }
+    ]
+}))
+}
+ 
+renderMap = () => {
+  const map = new mapboxgl.Map({
+    container: this.mapContainer,
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [this.state.lng, this.state.lat],
+    zoom: this.state.zoom,
+  });
+  // map.on('click', 'addMarker',  () => {
+  //   this.setState({
+  //     lng: map.getCenter().lng.toFixed(4),
+  //     lat: map.getCenter().lat.toFixed(4),
+  //     zoom: map.getZoom().toFixed(2),
+  //   });
+  // });
+  map.on('click', this.set);
+
+  map.addControl(new mapboxgl.NavigationControl());
+  map.addControl(
+    new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true,
+      },
+      trackUserLocation: true,
+    }),
+  );
+
+
+  this.state.data.map((item) => {
+    var el = document.createElement('div');
+    el.className = 'marker';
+    new mapboxgl.Marker(el)
+      .setLngLat([item.lng, item.lat])
+      .setPopup(
+        new mapboxgl.Popup({ offset: 25 }) // add popups
+          .setHTML(
+            `<div>
+            <img src=${item.picURL} width='180' />
+              <h4>${item.restaurantName} </h4>
+              <p> ${item.address}</p>
+              <form onsubmit="${e => this.submitForm(e.preventDefault())}">
+              <input class='form-control' type="text" placeholder="Add your review"/>
+              </form>
+             ${item.ratings.map(e => "<p>" + e.comment + "</p>")}
+            </div>`
+          ),
+      )
+      .addTo(map);
+  });
+}
+submitForm = (e) => {
+  e.preventDefault()
+ console.log('Hello there')
+}
 
   componentDidMount() {
-    const map = new mapboxgl.Map({
-      container: this.mapContainer,
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [this.state.lng, this.state.lat],
-      zoom: this.state.zoom,
-    });
-    map.on('click', 'addMarker',  () => {
-      this.setState({
-        lng: map.getCenter().lng.toFixed(4),
-        lat: map.getCenter().lat.toFixed(4),
-        zoom: map.getZoom().toFixed(2),
-      });
-    });
+    this.renderMap()
+  }
 
-    map.addControl(new mapboxgl.NavigationControl());
-    map.addControl(
-      new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true,
-        },
-        trackUserLocation: true,
-      }),
-    );
-
-    Data.map((item) => {
-      var el = document.createElement('div');
-      el.className = 'marker';
-      new mapboxgl.Marker(el)
-        .setLngLat([item.lng, item.lat])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 }) // add popups
-            .setHTML(
-              `<div>
-              <img src=${item.picURL} width='180' />
-                <h4>${item.restaurantName} </h4>
-                <p> ${item.address}</p>
-            ${item.ratings.map(e => "<p>" + e.comment + "</p>")}
-              </div>`
-            ),
-        )
-        .addTo(map);
-    });
+  componentDidUpdate(){
+    this.renderMap()
   }
 
   render() {
@@ -75,8 +104,8 @@ class MapContainer extends React.Component {
             {this.state.zoom}
           </div>
         </div>
-
-        <div ref={(el) => (this.mapContainer = el)} onClick={this.handleClick} className="mapContainer" />
+        
+        <div ref={(el) => (this.mapContainer = el)} className="mapContainer" />
       </div>
     );
   }

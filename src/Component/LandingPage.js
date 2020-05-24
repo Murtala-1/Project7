@@ -99,10 +99,10 @@ class LandingPage extends React.Component {
         </Card>
 
         <Row>
-          <Col md={4} className="mt-5">
+          <Col md={3} className="mt-5 ml-4">
             {dataComponent}
           </Col>
-          <Col md={8} style={{ marginTop: 115 }}>
+          <Col md={8} className='' style={{ marginTop: 115, marginLeft: '70px' }}>
             <Card>
               <MapContainer />
             </Card>{' '}
