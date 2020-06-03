@@ -10,11 +10,11 @@ const Data = [
     ratings: [
       {
         stars: 4,
-        comment: 'Great! But not many veggie options.',
+        comment: 'Great! But not many veggie options.'
       },
       {
         stars: 5,
-        comment: 'My favorite restaurant!',
+        comment: 'My favorite restaurant!'
       },
     ],
   },
@@ -31,11 +31,11 @@ const Data = [
     ratings: [
       {
         stars: 5,
-        comment: 'Tiny pizzeria next to Sacre Coeur!',
+        comment: 'Tiny pizzeria next to Sacre Coeur!'
       },
       {
         stars: 3,
-        comment: 'Meh, it was fine.',
+        comment: 'Meh, it was fine.'
       },
     ],
   },
@@ -53,11 +53,11 @@ const Data = [
     ratings: [
       {
         stars: 5,
-        comment: 'There Pizza and Gurasa is really nice!',
+        comment: 'There Pizza and Gurasa is really nice!'
       },
       {
         stars: 4,
-        comment: 'I think is nice place to get nice stuf',
+        comment: 'I think is nice place to get nice stuf'
       },
     ],
   },
@@ -75,11 +75,11 @@ const Data = [
       {
         stars: 5,
         comment:
-          'Had a very nice experience. Good ambience. Lovely grilled chicken.',
+          'Had a very nice experience. Good ambience. Lovely grilled chicken.'
       },
       {
         stars: 4,
-        comment: 'I think is nice place to get nice stuf',
+        comment: 'I think is nice place to get nice stuf'
       },
     ],
   },
@@ -97,12 +97,12 @@ const Data = [
       {
         stars: 5,
         comment:
-          "They've got a good very nice cake. As I've taste it and I love it",
+          "They've got a good very nice cake. As I've taste it and I love it"
       },
       {
         stars: 4,
         comment:
-          "I'll be right here. Until they drag me off the line. I'm not going anywhere.",
+          "I'll be right here. Until they drag me off the line. I'm not going anywhere."
       },
     ],
   },
@@ -118,11 +118,11 @@ const Data = [
     ratings: [
       {
         stars: 5,
-        comment: 'Nice egg bread they got there. Very nice',
+        comment: 'Nice egg bread they got there. Very nice'
       },
       {
         stars: 4,
-        comment: 'Wow wonderfully never forget u',
+        comment: 'Wow wonderfully never forget u'
       },
     ],
   },
@@ -140,11 +140,11 @@ const Data = [
     ratings: [
       {
         stars: 5,
-        comment: 'Good place for tea and relaxation.',
+        comment: 'Good place for tea and relaxation.'
       },
       {
         stars: 4,
-        comment: 'Nice food is served here.',
+        comment: 'Nice food is served here.'
       },
     ],
   },
@@ -161,11 +161,11 @@ const Data = [
     ratings: [
       {
         stars: 5,
-        comment: 'Good place for tea and relaxation.',
+        comment: 'Good place for tea and relaxation.'
       },
       {
         stars: 4,
-        comment: 'Nice food is served here.',
+        comment: 'Nice food is served here.'
       },
     ],
   },
@@ -183,11 +183,11 @@ const Data = [
     ratings: [
       {
         stars: 5,
-        comment: 'Good place for tea and relaxation.',
+        comment: 'Good place for tea and relaxation.'
       },
       {
         stars: 4,
-        comment: 'Nice food is served here.',
+        comment: 'Nice food is served here.'
       },
     ],
   },
@@ -205,11 +205,11 @@ const Data = [
     ratings: [
       {
         stars: 5,
-        comment: 'Good place for tea and relaxation.',
+        comment: 'Good place for tea and relaxation.'
       },
       {
         stars: 4,
-        comment: 'Nice food is served here.',
+        comment: 'Nice food is served here.'
       },
     ],
   },

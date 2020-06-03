@@ -13,26 +13,6 @@ code {
     monospace;
 }
 
-div.bodyStyle{
-  margin: 0;
-  padding: 0;
-}
 
-.mapContainer {
-  height: 80vh;
-  width: auto;
-  }
-
-  .sidebarStyle {
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: #404040;
-    color: #ffffff;
-    z-index: 1 !important;
-    padding: 6px;
-    font-weight: bold;
-    }
-
+ 
    

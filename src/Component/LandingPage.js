@@ -15,8 +15,7 @@ import MapContainer from './Map';
 import RestaurantList from './RestaurantList';
 import { FaSearchLocation } from 'react-icons/fa';
 import Data from './Data';
-
-import { Route, Switch, BrowserRouter } from 'react-router-dom'
+import MapGL from './MapGL'
 
 class LandingPage extends React.Component {
   state = {
@@ -70,7 +69,7 @@ class LandingPage extends React.Component {
           <center>
             {' '}
             <CardHeader>
-              Enter your address to find local restaurants around you{' '}
+              Search for your address to find local restaurants around you
             </CardHeader>
           </center>
           <CardBody>
@@ -98,13 +97,14 @@ class LandingPage extends React.Component {
           <CardFooter>Log in for your recent addresses.</CardFooter>
         </Card>
 
-        <Row>
-          <Col md={3} className="mt-5 ml-4">
+        <Row className="m-0">
+          <Col md={4} className="mt-5 ml-0">
             {dataComponent}
           </Col>
-          <Col md={8} className='' style={{ marginTop: 115, marginLeft: '70px' }}>
+          <Col md={8} className='' style={{ marginTop: 115, }}>
             <Card>
-              <MapContainer />
+              <MapGL />
+              {/* <MapContainer /> */}
             </Card>{' '}
           </Col>
         </Row>

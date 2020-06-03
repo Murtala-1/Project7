@@ -37,6 +37,30 @@
   }
 }
 
+div.bodyStyle{
+  margin: 0;
+  padding: 0;
+}
+
+.mapContainer {
+  height: 100vh;
+  width: 63em;
+  }
+
+
+.sidebarStyle {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #404040;
+  color: #ffffff;
+  z-index: 1 !important;
+  padding: 6px;
+  font-weight: bold;
+  }
+
+
 .marker {
   background-image: url('./marker.png');
   background-size: cover;
@@ -44,4 +68,13 @@
   height: 50px;
   border-radius: 50%;
   cursor: pointer;
+}
+
+.overlay_shown {
+  opacity: 1;
+}
+
+.overlay_hidden {
+  display: none;
+  opacity: 0;
 }
