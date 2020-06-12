@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactMapboxGl, {
-  Layer,
+  Layer, Feature,
   Popup,
   Marker,
   ZoomControl,
@@ -8,122 +8,187 @@ import ReactMapboxGl, {
 } from 'react-mapbox-gl';
 import { MdStar } from 'react-icons/md';
 import Data from './Data';
-import mapboxgl from 'mapbox-gl';
+import {Card} from 'reactstrap'
 
 
 const Map = ReactMapboxGl({
+  maxZoom: 25,
+  minZoom: 14,
   accessToken:
     'pk.eyJ1IjoiYWtpbnllbWkxNDcyIiwiYSI6ImNrMXoyNW92dDBsZ2UzaG12Mm9xNGhmdGcifQ.RlIm2uIf_39XH1hbaG4C7A',
 });
+const StyledPopup = {
+  background: "white",
+  color: "#3f618c",
+  fontSize: 10 ,
+  fontWeight: 400,
+  padding: "5px",
+  borderRadius: "2px",
+  width: '25em'
+
+}
+const flyToOptions = {
+  speed: 0.8
+};
+const mapStyle = {
+  flex: 1
+};
+
+let index = 0;
 
 class MapGL extends React.Component {
   state = {
     lng: 8.5601,
     lat: 11.991,
-    zoom: 13,
+    zoom: [13],
     loading: true,
     restuarant: [],
-    userLocation: {},
+    stations: {},
     data: Data,
-    popupInfo: false
-
+    station: undefined,
+    fitBounds: undefined,
+    center: [],
+    name: ''
   };
-  set = e => {
+
+ 
+  onNameChange = event => {
+    this.setState({
+      name: event.target.value,
+    });
+  };
+
+  addItem = () => {
+    const { name, station } = this.state;
+    let newb = station.ratings.concat({
+      stars: 5,
+      comment: name
+  })
+    this.setState(prev => ({
+      station: {
+        ...prev.station,
+        ratings: newb
+      }
+    }));
+   
+  };
+ markerClick = (station) => {
+   console.log(station)
+    this.setState({
+      center:[this.state.lng, this.state.lat],
+      station
+    });
+  };
+
+ onStyleLoad = (map) => {
+    const { onStyleLoad } = this.props;
+    return onStyleLoad && onStyleLoad(map);
+  };
+
+  onDrag = () => {
+    if (this.state.data) {
+      this.setState({ data: undefined });
+    }
+  };
+
+
+  handInputSubmit = (e) => {
+    e.preventDefault()
+    console.log("Hello World")
+  };
+  _onClickMap = (map, evt)=> {
+    console.log(evt.lngLat);
     this.setState(prev => ({
       data: [
         ...prev.data,
         {
           restaurantName: '',
           address: '',
-          lat: e.lngLat.wrap().lat,
-          lng: e.lngLat.wrap().lng,
+          lat: evt.lngLat.wrap().lat,
+          lng: evt.lngLat.wrap().lng,
           picURL: '',
           ratings: [],
         },
       ],
-    }));
-  };
-
-  renderPopup = (index) => {
-    {this.state.data.map(item => (
-      this.state.popupInfo && (
-      <Popup
-      anchor="bottom-right"
-      className="hide"
-        coordinates={[item[index].lng, item[index].lat]}
-        offset={{
-          'bottom-left': [12, -38],
-          bottom: [0, -38],
-          'bottom-right': [-12, -38],
-        }}
-        onMouseLeave={() => this.setState({popupInfo: false})}
-        closeOnClick={true}
-       
-        >
-          
-        <div onClick={this._onClosePopup}>
-          <img src={item.picURL} width="180" />
-          <h4>{item.restaurantName} </h4>
-          <p> {item.address}</p>
-          <form onClick={this.handInputSubmit}>
-            <input
-              class="form-control"
-              type="text"
-              placeholder="Add your review"
-            />
-          </form>
-          {item.ratings.map(e => (
-            <li>
-              {e.comment} <MdStar />
-              {e.stars}
-            </li>
-          ))}
-        </div>
-      
-      </Popup>
-      )
-    ))}
+    }))
   }
 
-  handInputSubmit = (e) => {
-    e.preventDefault()
-    console.log("Hello World")
-  }
+
   render() {
+    const image = new Image();
+    image.src=`${require('../marker.png')}`
+    const images= ['marker', image];
+    const layoutLayer = { 'icon-image': 'marker' }
+    const { items, name, zoom, station, data } = this.state;
     return (
       <Map
-      
-          onStyleLoad={this.onMapLoad}
+        onClick={this._onClickMap}
+        onStyleLoad={this.onMapLoad}
         center={[this.state.lng, this.state.lat]}
         zoom={[this.state.zoom]}
         style="mapbox://styles/mapbox/streets-v9"
         containerStyle={{
           height: '140vh',
           width: '64vw',
-        }}>
-        <ZoomControl />
-        <RotationControl />
+        }}
+        >
         <div className="sidebarStyle">
           <div>
             Longitude: {this.state.lng} | Latitude: {this.state.lat} | Zoom:{' '}
             {this.state.zoom}
           </div>
+          
         </div>
-        <Layer
-          type="symbol"
-          id="marker"
-          layout={{ 'icon-image': 'marker-15' }}></Layer>
 
+        <Layer type="symbol" id="marker" layout={layoutLayer} images={images}>
+          {data.map((item, index) =>
+          <Feature coordinates={[item.lng, item.lat]} 
+          key={index}
+          onClick={() => this.markerClick(item)}
+          />
+          )}
+    </Layer>
+          
+      {station &&(
+          <Popup
+            key={station.id}
+            anchor="bottom-right"
+            coordinates={[station.lng, station.lat]}
+            onClick={() => this.handtoggle}
+            style={StyledPopup}
+           >
+              
+            <div>
+              <img src={station.picURL} width="180" />
+              <h4>{station.restaurantName} </h4>
+              <p> {station.address}</p>
+              <div className="d-flex ">
+                <input
+                  value={name} onChange={this.onNameChange}
+                  className="form-control"
+                  type="text"
+                  placeholder="Add your review"
+                />
+                <button className="btn btn-success" onClick={this.addItem}>Add</button>
+              </div>
+            {station.ratings.map(item => 
+              <li>
+                  {item.comment} <MdStar />
+                  {item.stars}
+                </li>
+            )}           
+                
+          
+            </div>
+          
+          </Popup>
+         
+        )} 
+        
         
 
-        {this.state.data.map(item => (
-          <Marker coordinates={[item.lng, item.lat]}  anchor="bottom" >
-            <img src={require('../marker.png')} 
-          onMouseEnter={()=>this.setState({popupInfo: true})}
-          onMouseLeave={()=>this.setState({popupInfo: false})} 
-         />
-          </Marker>
-        ))}
+        <ZoomControl />
+        <RotationControl />
       </Map>
     );
   }

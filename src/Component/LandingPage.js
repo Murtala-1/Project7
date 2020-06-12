@@ -69,7 +69,7 @@ class LandingPage extends React.Component {
           <center>
             {' '}
             <CardHeader>
-              Search for your address to find local restaurants around you
+              Search for your address to find local restaurants around you{' '}
             </CardHeader>
           </center>
           <CardBody>
