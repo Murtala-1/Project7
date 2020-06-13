@@ -8,7 +8,7 @@ import ReactMapboxGl, {
 } from 'react-mapbox-gl';
 import { MdStar } from 'react-icons/md';
 import Data from './Data';
-import {Card} from 'reactstrap'
+
 
 
 const Map = ReactMapboxGl({
@@ -43,9 +43,9 @@ class MapGL extends React.Component {
     zoom: [13],
     loading: true,
     restuarant: [],
-    stations: {},
+    restaurant: {},
     data: Data,
-    station: undefined,
+    restaurant: undefined,
     fitBounds: undefined,
     center: [],
     name: ''
@@ -59,24 +59,24 @@ class MapGL extends React.Component {
   };
 
   addItem = () => {
-    const { name, station } = this.state;
-    let newb = station.ratings.concat({
+    const { name, restaurant } = this.state;
+    let newb = restaurant.ratings.concat({
       stars: 5,
       comment: name
   })
     this.setState(prev => ({
-      station: {
-        ...prev.station,
+      restaurant: {
+        ...prev.restaurant,
         ratings: newb
       }
     }));
    
   };
- markerClick = (station) => {
-   console.log(station)
+ markerClick = (restaurant) => {
+   console.log(restaurant)
     this.setState({
       center:[this.state.lng, this.state.lat],
-      station
+      restaurant
     });
   };
 
@@ -119,7 +119,7 @@ class MapGL extends React.Component {
     image.src=`${require('../marker.png')}`
     const images= ['marker', image];
     const layoutLayer = { 'icon-image': 'marker' }
-    const { items, name, zoom, station, data } = this.state;
+    const { items, name, zoom, restaurant, data } = this.state;
     return (
       <Map
         onClick={this._onClickMap}
@@ -149,19 +149,19 @@ class MapGL extends React.Component {
           )}
     </Layer>
           
-      {station &&(
+      {restaurant &&(
           <Popup
-            key={station.id}
+            key={restaurant.id}
             anchor="bottom-right"
-            coordinates={[station.lng, station.lat]}
+            coordinates={[restaurant.lng, restaurant.lat]}
             onClick={() => this.handtoggle}
             style={StyledPopup}
            >
               
             <div>
-              <img src={station.picURL} width="180" />
-              <h4>{station.restaurantName} </h4>
-              <p> {station.address}</p>
+              <img src={restaurant.picURL} width="180" />
+              <h4>{restaurant.restaurantName} </h4>
+              <p> {restaurant.address}</p>
               <div className="d-flex ">
                 <input
                   value={name} onChange={this.onNameChange}
@@ -171,7 +171,7 @@ class MapGL extends React.Component {
                 />
                 <button className="btn btn-success" onClick={this.addItem}>Add</button>
               </div>
-            {station.ratings.map(item => 
+            {restaurant.ratings.map(item => 
               <li>
                   {item.comment} <MdStar />
                   {item.stars}
