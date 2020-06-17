@@ -12,6 +12,8 @@ import Data from './Data';
 
 
 const Map = ReactMapboxGl({
+  maxZoom: 25,
+  minZoom: 14,
   accessToken:
     'pk.eyJ1IjoiYWtpbnllbWkxNDcyIiwiYSI6ImNrMXoyNW92dDBsZ2UzaG12Mm9xNGhmdGcifQ.RlIm2uIf_39XH1hbaG4C7A',
 });
@@ -32,20 +34,21 @@ const mapStyle = {
   flex: 1
 };
 
-let index = 0; 
+let index = 0;
 
 class MapGL extends React.Component {
   state = {
-    longitude: 100.869281,
-    latitude: 12.906024,
+    lng: 8.5601,
+    lat: 11.991,
+    zoom: [13],
     loading: true,
     restuarant: [],
     restaurant: {},
-    data: [],
+    data: Data,
     restaurant: undefined,
     fitBounds: undefined,
     center: [],
-    addReview: ''
+    name: ''
   };
 
  
@@ -56,10 +59,10 @@ class MapGL extends React.Component {
   };
 
   addItem = () => {
-    const { addReview, restaurant } = this.state;
-    let newb = restaurant.reviews.concat({
-      rating: 5,
-      title: addReview
+    const { name, restaurant } = this.state;
+    let newb = restaurant.ratings.concat({
+      stars: 5,
+      comment: name
   })
     this.setState(prev => ({
       restaurant: {
@@ -72,7 +75,7 @@ class MapGL extends React.Component {
  markerClick = (restaurant) => {
    console.log(restaurant)
     this.setState({
-      center:[this.state.longitude, this.state.latitude],
+      center:[this.state.lng, this.state.lat],
       restaurant
     });
   };
@@ -99,48 +102,30 @@ class MapGL extends React.Component {
       data: [
         ...prev.data,
         {
-          name: '',
+          restaurantName: '',
           address: '',
-          latitude: evt.lngLat.wrap().latitude,
-          longitude: evt.lngLat.wrap().longitude,
-          photo: {
-            images: {
-              small: {
-                url: ''
-              }
-            }
-          },
-          reviews: [],
+          lat: evt.lngLat.wrap().lat,
+          lng: evt.lngLat.wrap().lng,
+          picURL: '',
+          ratings: [],
         },
       ],
     }))
   }
-    
-  componentDidMount() {
-    fetch("https://tripadvisor1.p.rapidapi.com/restaurants/list?restaurant_tagcategory_standalone=10591&lunit=km&restaurant_tagcategory=10591&limit=30&currency=USD&lang=en_US&location_id=293919", {
-	"method": "GET",
-	"headers": {
-		"x-rapidapi-host": "tripadvisor1.p.rapidapi.com",
-		"x-rapidapi-key": "c25632a82cmshe1eea9b7f4ebb7ep15df2ejsn56f040c948d9"
-	}
-})
-.then(raw => raw.json())
-.then(response => this.setState({data:response.data}))
-.catch(err => {
-	console.log(err);
-});
-  }
+
+
   render() {
     const image = new Image();
     image.src=`${require('../marker.png')}`
     const images= ['marker', image];
     const layoutLayer = { 'icon-image': 'marker' }
-    const { items, addReview, zoom, restaurant, data } = this.state;
+    const { items, name, zoom, restaurant, data } = this.state;
     return (
       <Map
         onClick={this._onClickMap}
         onStyleLoad={this.onMapLoad}
-        center={[this.state.longitude, this.state.latitude]}
+        center={[this.state.lng, this.state.lat]}
+        zoom={[this.state.zoom]}
         style="mapbox://styles/mapbox/streets-v9"
         containerStyle={{
           height: '140vh',
@@ -149,15 +134,15 @@ class MapGL extends React.Component {
         >
         <div className="sidebarStyle">
           <div>
-            Longitude: {this.state.longitude} | Latitude: {this.state.latitude} | Zoom:
+            Longitude: {this.state.lng} | Latitude: {this.state.lat} | Zoom:{' '}
             {this.state.zoom}
           </div>
-        
+          
         </div>
 
         <Layer type="symbol" id="marker" layout={layoutLayer} images={images}>
           {data.map((item, index) =>
-          <Feature coordinates={[item.longitude, item.latitude]} 
+          <Feature coordinates={[item.lng, item.lat]} 
           key={index}
           onClick={() => this.markerClick(item)}
           />
@@ -168,30 +153,30 @@ class MapGL extends React.Component {
           <Popup
             key={restaurant.id}
             anchor="bottom-right"
-            coordinates={[restaurant.longitude, restaurant.latitude]}
+            coordinates={[restaurant.lng, restaurant.lat]}
             onClick={() => this.handtoggle}
             style={StyledPopup}
            >
               
             <div>
-              <img src={restaurant.photo.images.small.url} width="193px" height="250" />
-              <h4>{restaurant.name} </h4>
+              <img src={restaurant.picURL} width="180" />
+              <h4>{restaurant.restaurantName} </h4>
               <p> {restaurant.address}</p>
               <div className="d-flex ">
                 <input
-                  value={addReview} onChange={this.onNameChange}
+                  value={name} onChange={this.onNameChange}
                   className="form-control"
                   type="text"
                   placeholder="Add your review"
                 />
                 <button className="btn btn-success" onClick={this.addItem}>Add</button>
               </div>
-            {restaurant.reviews && restaurant.reviews.length ? restaurant.reviews.map(item => 
+            {restaurant.ratings.map(item => 
               <li>
-                  {item.title} <MdStar />
-                  {item.rating}
+                  {item.comment} <MdStar />
+                  {item.stars}
                 </li>
-            ): null}           
+            )}           
                 
           
             </div>
