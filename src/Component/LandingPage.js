@@ -20,10 +20,12 @@ import MapGL from './MapGL'
 class LandingPage extends React.Component {
   state = {
     address: '',
+    data: ''
   };
   handleSummit = (e) => {
     this.setState({
       address: e.address,
+      
     });
   };
   updateAddress = (address) => {
@@ -31,7 +33,20 @@ class LandingPage extends React.Component {
       address: address.trim()
     }));
   };
-
+//   componentDidMount() {
+//     fetch("https://tripadvisor1.p.rapidapi.com/restaurants/list?restaurant_tagcategory_standalone=10591&lunit=km&restaurant_tagcategory=10591&limit=30&currency=USD&lang=en_US&location_id=293919", {
+// 	"method": "GET",
+// 	"headers": {
+// 		"x-rapidapi-host": "tripadvisor1.p.rapidapi.com",
+// 		"x-rapidapi-key": "c25632a82cmshe1eea9b7f4ebb7ep15df2ejsn56f040c948d9"
+// 	}
+// })
+// .then(raw => raw.json())
+// .then(response => this.setState({data:response.data}))
+// .catch(err => {
+// 	console.log(err);
+// });
+//   }
   render() {
     const dataComponent = [];
     Data.forEach((item) => {

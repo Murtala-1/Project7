@@ -7,7 +7,7 @@ import ReactMapboxGl, {
   RotationControl,
 } from 'react-mapbox-gl';
 import { MdStar } from 'react-icons/md';
-import Data from './Data';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Col, FormGroup, Input  } from 'reactstrap';
 
 
 
@@ -45,9 +45,30 @@ class MapGL extends React.Component {
     restaurant: undefined,
     fitBounds: undefined,
     center: [],
-    addReview: ''
-  };
+    addReview: '',
+    addRatings: '',
+    modals: false,
+    toggle: false,
+    newRestuarantName: '',
+    newRestuarantAddress: '', 
+    newRestuarant: {}
 
+  };
+handleOnChange = (e) => {
+  const {name, value} = e.target
+  this.setState( prev => ({
+    newRestuarant: {
+      ...prev.newRestuarant,
+      [name] : value
+    },
+   
+  }))
+}
+  handtoggle = () => {
+    this.setState( prev => ({
+      modals: !prev.modals,
+    }))
+  }
  
   onNameChange = event => {
     this.setState({
@@ -56,9 +77,9 @@ class MapGL extends React.Component {
   };
 
   addItem = () => {
-    const { addReview, restaurant } = this.state;
+    const { addReview, restaurant, addRatings } = this.state;
     let newb = restaurant.reviews.concat({
-      rating: 5,
+      ratings: addRatings,
       title: addReview
   })
     this.setState(prev => ({
@@ -88,34 +109,34 @@ class MapGL extends React.Component {
     }
   };
 
-
-  handInputSubmit = (e) => {
-    e.preventDefault()
-    console.log("Hello World")
-  };
   _onClickMap = (map, evt)=> {
-    console.log(evt.lngLat);
+    this.setState({
+      newRestuarant : {
+        name: '',
+        address: '',
+        latitude: evt.lngLat.wrap().lat,
+        longitude: evt.lngLat.wrap().lng,
+        photo: {
+          images: {
+            small: {
+              url: ''
+            }
+          }
+        },
+        reviews: [],
+      },
+    })
+    this.handtoggle()
+  }
+    saveRestuarant = () => {
     this.setState(prev => ({
       data: [
         ...prev.data,
-        {
-          name: '',
-          address: '',
-          latitude: evt.lngLat.wrap().latitude,
-          longitude: evt.lngLat.wrap().longitude,
-          photo: {
-            images: {
-              small: {
-                url: ''
-              }
-            }
-          },
-          reviews: [],
-        },
+        prev.newRestuarant
       ],
+      modals : false
     }))
-  }
-    
+    }
   componentDidMount() {
     fetch("https://tripadvisor1.p.rapidapi.com/restaurants/list?restaurant_tagcategory_standalone=10591&lunit=km&restaurant_tagcategory=10591&limit=30&currency=USD&lang=en_US&location_id=293919", {
 	"method": "GET",
@@ -135,7 +156,7 @@ class MapGL extends React.Component {
     image.src=`${require('../marker.png')}`
     const images= ['marker', image];
     const layoutLayer = { 'icon-image': 'marker' }
-    const { items, addReview, zoom, restaurant, data } = this.state;
+    const { modals, addReview, toggle, restaurant, data, addRatings } = this.state;
     return (
       <Map
         onClick={this._onClickMap}
@@ -169,7 +190,6 @@ class MapGL extends React.Component {
             key={restaurant.id}
             anchor="bottom-right"
             coordinates={[restaurant.longitude, restaurant.latitude]}
-            onClick={() => this.handtoggle}
             style={StyledPopup}
            >
               
@@ -177,14 +197,20 @@ class MapGL extends React.Component {
               <img src={restaurant.photo.images.small.url} width="193px" height="250" />
               <h4>{restaurant.name} </h4>
               <p> {restaurant.address}</p>
-              <div className="d-flex ">
+              <div className="">
                 <input
                   value={addReview} onChange={this.onNameChange}
-                  className="form-control"
+                  className="form-control mb-1"
                   type="text"
                   placeholder="Add your review"
                 />
-                <button className="btn btn-success" onClick={this.addItem}>Add</button>
+                <input
+                value={addRatings} onChange={this.onNameChange}
+                className="form-control mb-1"
+                type="number"
+                placeholder="Add your rating"
+              />
+                <button className="btn btn-success btn-block" onClick={this.addItem}>Add</button>
               </div>
             {restaurant.reviews && restaurant.reviews.length ? restaurant.reviews.map(item => 
               <li>
@@ -199,7 +225,33 @@ class MapGL extends React.Component {
           </Popup>
          
         )} 
-        
+        <Modal isOpen={modals} toggle={this.handtoggle} >
+        <ModalHeader toggle={this.handtoggle}>Add Restuarant</ModalHeader>
+        <ModalBody>
+        <FormGroup row>
+        <Col sm={10}>
+          <Input type="name" 
+            name="name"
+            onChange={this.handleOnChange} 
+            value={this.state.newRestuarant.name} 
+            placeholder="Restuarant Name" />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <Col sm={10}>
+          <Input type="address" 
+          name="address" 
+          onChange={this.handleOnChange} 
+          value={this.state.newRestuarant.address}
+          placeholder="Restuarant Address" />
+        </Col>
+      </FormGroup>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={this.saveRestuarant}>Save</Button>{' '}
+          <Button color="secondary" onClick={this.handtoggle}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
         
 
         <ZoomControl />
