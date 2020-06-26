@@ -16,6 +16,7 @@
     "mapbox-gl": "^1.10.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-free-scrollbar": "^0.3.4",
     "react-icons": "^3.9.0",
     "react-map-gl": "^5.2.3",
     "react-map-gl-geocoder": "^2.0.11",

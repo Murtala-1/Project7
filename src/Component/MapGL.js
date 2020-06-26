@@ -2,7 +2,6 @@ import React from 'react';
 import ReactMapboxGl, {
   Layer, Feature,
   Popup,
-  Marker,
   ZoomControl,
   RotationControl,
 } from 'react-mapbox-gl';
@@ -25,28 +24,20 @@ const StyledPopup = {
   width: '25em'
 
 }
-const flyToOptions = {
-  speed: 0.8
-};
-const mapStyle = {
-  flex: 1
-};
 
-let index = 0; 
 
 class MapGL extends React.Component {
   state = {
     longitude: 100.869281,
     latitude: 12.906024,
     loading: true,
-    data: [],
     restaurant: undefined,
     fitBounds: undefined,
     center: [],
-    addReview: '',
-    addRatings: '',
     modals: false,
     toggle: false,
+    addReview: '',
+    addRatings: '',
     newRestuarantName: '',
     newRestuarantAddress: '', 
     newRestuarant: {}
@@ -75,6 +66,56 @@ handleOnChange = (e) => {
     });
   };
 
+ 
+ markerClick = (restaurant) => {
+   console.log(restaurant)
+    this.setState({
+      center:[this.state.longitude, this.state.latitude],
+      restaurant,
+      modals: false,
+      toggle: false
+      });
+      
+  };
+
+ onStyleLoad = (map) => {
+    const { onStyleLoad } = this.props;
+    return onStyleLoad && onStyleLoad(map);
+  };
+
+  onDrag = () => {
+    if (this.state.data) {
+      this.setState({ data: undefined });
+    }
+  };
+
+  _onClickMap = (map, evt)=> {  
+    this.setState({
+      newRestuarant : {
+        name: '',
+        address: '',
+        latitude: evt.lngLat.wrap().lat,
+        longitude: evt.lngLat.wrap().lng,
+        photo: {
+          images: {
+            small: {
+              url: ''
+            }
+          }
+        },
+        reviews: [],
+      },
+    })
+    
+      this.handtoggle()
+    
+  }
+  reviewsReset = () => {
+    this.setState({
+      addReview : '',
+      addRatings : ''
+    })
+  }
   addItem = () => {
     const { addReview, restaurant, addRatings } = this.state;
     
@@ -101,78 +142,12 @@ handleOnChange = (e) => {
       }
     }));
     }
-   
-   
+    this.reviewsReset()
   };
- markerClick = (restaurant) => {
-   console.log(restaurant)
-    this.setState({
-      center:[this.state.longitude, this.state.latitude],
-      restaurant,
-      modals: false,
-      toggle: false
-      });
-      
-  };
-
- onStyleLoad = (map) => {
-    const { onStyleLoad } = this.props;
-    return onStyleLoad && onStyleLoad(map);
-  };
-
-  onDrag = () => {
-    if (this.state.data) {
-      this.setState({ data: undefined });
-    }
-  };
-
-  _onClickMap = (map, evt)=> {
-    this.setState({
-      newRestuarant : {
-        name: '',
-        address: '',
-        latitude: evt.lngLat.wrap().lat,
-        longitude: evt.lngLat.wrap().lng,
-        photo: {
-          images: {
-            small: {
-              url: ''
-            }
-          }
-        },
-        reviews: [],
-      },
-    })
-    if(this.state.newRestuarant){
-      this.handtoggle()
-    }else{
-      return null
-    }
-
-  }
-    saveRestuarant = () => {
-    this.setState(prev => ({
-      data: [
-        ...prev.data,
-        prev.newRestuarant
-      ],
-      modals : false
-    }))
-    }
-  componentDidMount() {
-    fetch("https://tripadvisor1.p.rapidapi.com/restaurants/list?restaurant_tagcategory_standalone=10591&lunit=km&restaurant_tagcategory=10591&limit=30&currency=USD&lang=en_US&location_id=293919", {
-	"method": "GET",
-	"headers": {
-		"x-rapidapi-host": "tripadvisor1.p.rapidapi.com",
-		"x-rapidapi-key": "c25632a82cmshe1eea9b7f4ebb7ep15df2ejsn56f040c948d9"
-	}
-})
-.then(raw => raw.json())
-.then(response => this.setState({data:response.data}))
-.catch(err => {
-	console.log(err);
-});
-  }
+saveRestaurant = () => {
+  this.props.saveRestuarant(this.state.newRestuarant)
+}
+ 
   render() {
     const image = new Image();
     image.src=`${require('../marker.png')}`
@@ -199,7 +174,7 @@ handleOnChange = (e) => {
         </div>
 
         <Layer type="symbol" id="marker" layout={layoutLayer} images={images}>
-          {data.map((item, index) =>
+          {this.props.data.map((item, index) =>
           <Feature key={item.id} coordinates={[item.longitude, item.latitude]} 
           key={index}
           onClick={() => this.markerClick(item)}
@@ -272,7 +247,7 @@ handleOnChange = (e) => {
       </FormGroup>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={this.saveRestuarant}>Save</Button>{' '}
+          <Button color="primary" onClick={this.saveRestaurant}>Save</Button>{' '}
           <Button color="secondary" onClick={this.handtoggle}>Cancel</Button>
         </ModalFooter>
       </Modal>

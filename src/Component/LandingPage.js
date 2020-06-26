@@ -11,16 +11,16 @@ import {
   Col,
 } from 'reactstrap';
 import NavBar from './NavBar';
-import MapContainer from './Map';
 import RestaurantList from './RestaurantList';
 import { FaSearchLocation } from 'react-icons/fa';
-import Data from './Data';
 import MapGL from './MapGL'
 
 class LandingPage extends React.Component {
   state = {
     address: '',
-    data: []
+    data: [],
+    restaurant : '',
+    modals: false,
   };
   handleSummit = (e) => {
     this.setState({
@@ -33,36 +33,46 @@ class LandingPage extends React.Component {
       address: address.trim()
     }));
   };
-//   componentDidMount() {
-//     fetch("https://tripadvisor1.p.rapidapi.com/restaurants/list?restaurant_tagcategory_standalone=10591&lunit=km&restaurant_tagcategory=10591&limit=30&currency=USD&lang=en_US&location_id=293919", {
-// 	"method": "GET",
-// 	"headers": {
-// 		"x-rapidapi-host": "tripadvisor1.p.rapidapi.com",
-// 		"x-rapidapi-key": "c25632a82cmshe1eea9b7f4ebb7ep15df2ejsn56f040c948d9"
-// 	}
-// })
-// .then(raw => raw.json())
-// .then(response => this.setState({data:response.data}))
-// .catch(err => {
-// 	console.log(err);
-// });
-//   }
+  saveRestuarant = (newRestuarant) => {
+    this.setState(prev => ({
+      data: [
+        ...prev.data,
+        newRestuarant
+      ],
+      modals : false
+    }))
+    }
+    
+  componentDidMount() {
+    fetch("https://tripadvisor1.p.rapidapi.com/restaurants/list?restaurant_tagcategory_standalone=10591&lunit=km&restaurant_tagcategory=10591&limit=30&currency=USD&lang=en_US&location_id=293919", {
+	"method": "GET",
+	"headers": {
+		"x-rapidapi-host": "tripadvisor1.p.rapidapi.com",
+		"x-rapidapi-key": "c25632a82cmshe1eea9b7f4ebb7ep15df2ejsn56f040c948d9"
+	}
+})
+.then(raw => raw.json())
+.then(response => this.setState({data:response.data}))
+.catch(err => {
+	console.log(err);
+});
+  }
+
   render() {
     const dataComponent = [];
-    Data.forEach((item) => {
+    this.state.data.forEach((item) => {
       if (
-        item.address.toLowerCase().indexOf(this.state.address.toLowerCase()) ===
+        item.address && item.address.toLowerCase().indexOf(this.state.address.toLowerCase()) ===
         -1
       )
         return;
       dataComponent.push(
         <RestaurantList
           key={item.id}
-          restaurantName={item.restaurantName}
+          name={item.name}
           address={item.address}
-          picture={item.picURL}
-          comment={item.ratings[1].comment}
-          rating={item.ratings[1].stars}
+          picture={item.photo && item.photo.images.small.url}
+          reviews={item.reviews}
         />,
       );
     });
@@ -82,14 +92,14 @@ class LandingPage extends React.Component {
 
         <Card className="w-50 ml-5 mt-5">
           <center>
-            {' '}
             <CardHeader>
-              Search for your address to find local restaurants around you{' '}
+              Search for your address to find local restaurants around you.
             </CardHeader>
           </center>
           <CardBody>
             <Row>
               <Col sm={9}>
+                {/* {JSON.stringify(this.state.data)} */}
                 <FormGroup>
                   <Input
                     type="text"
@@ -103,8 +113,8 @@ class LandingPage extends React.Component {
               </Col>
               <Col sm={3}>
                 <Button color="danger" onClick={this.handleSummit}>
-                  Search{' '}
-                  <FaSearchLocation size={15} style={{ marginRight: 5 }} />{' '}
+                  Search
+                  <FaSearchLocation size={15} style={{ marginRight: 5 }} />
                 </Button>
               </Col>
             </Row>
@@ -112,17 +122,19 @@ class LandingPage extends React.Component {
           <CardFooter>Log in for your recent addresses.</CardFooter>
         </Card>
 
-        <Row className="m-0 d-flex">
-          <div className='mt-5' >
-            <Card>
-              <MapGL />
-              {/* <MapContainer /> */}
-            </Card>{' '}
-          </div>
-          <div className="mt-5 m-0">
+        <div className="justify-content-between d-flex">
+          <div className="mt-2 m-0">
             {dataComponent}
           </div>
-        </Row>
+          <div className='mt-5' >
+            <Card>
+              <MapGL 
+             data={this.state.data}
+             saveRestuarant={this.saveRestuarant}
+              />
+            </Card>
+          </div>
+        </div>
       </div>
     );
   }
