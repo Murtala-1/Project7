@@ -20,7 +20,7 @@ import MapGL from './MapGL'
 class LandingPage extends React.Component {
   state = {
     address: '',
-    data: ''
+    data: []
   };
   handleSummit = (e) => {
     this.setState({
@@ -112,16 +112,16 @@ class LandingPage extends React.Component {
           <CardFooter>Log in for your recent addresses.</CardFooter>
         </Card>
 
-        <Row className="m-0">
-          <Col md={4} className="mt-5 ml-0">
-            {dataComponent}
-          </Col>
-          <Col md={8} className='' style={{ marginTop: 115, }}>
+        <Row className="m-0 d-flex">
+          <div className='mt-5' >
             <Card>
               <MapGL />
               {/* <MapContainer /> */}
             </Card>{' '}
-          </Col>
+          </div>
+          <div className="mt-5 m-0">
+            {dataComponent}
+          </div>
         </Row>
       </div>
     );

@@ -3,6 +3,7 @@ import { Row, Col, Card } from 'reactstrap';
 import { GiPositionMarker } from 'react-icons/gi';
 import { MdStar } from 'react-icons/md';
 import { MdModeComment } from 'react-icons/md';
+
 function RestaurantList(props) {
   const styles = {
     width: 100,

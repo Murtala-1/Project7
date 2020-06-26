@@ -39,8 +39,6 @@ class MapGL extends React.Component {
     longitude: 100.869281,
     latitude: 12.906024,
     loading: true,
-    restuarant: [],
-    restaurant: {},
     data: [],
     restaurant: undefined,
     fitBounds: undefined,
@@ -71,31 +69,50 @@ handleOnChange = (e) => {
   }
  
   onNameChange = event => {
+    const {name, value} = event.target
     this.setState({
-      name: event.target.value,
+      [name] : value,
     });
   };
 
   addItem = () => {
     const { addReview, restaurant, addRatings } = this.state;
-    let newb = restaurant.reviews.concat({
-      ratings: addRatings,
-      title: addReview
-  })
-    this.setState(prev => ({
+    
+    if (restaurant.reviews){
+      let newb = restaurant.reviews.concat({
+        rating: addRatings,
+        title: addReview
+    })
+       this.setState(prev => ({
       restaurant: {
         ...prev.restaurant,
-        ratings: newb
+         reviews: newb
       }
     }));
+    }else {
+      let newb = {
+        rating: addRatings,
+        title: addReview
+    }
+       this.setState(prev => ({
+      restaurant: {
+        ...prev.restaurant,
+         reviews: [newb]
+      }
+    }));
+    }
+   
    
   };
  markerClick = (restaurant) => {
    console.log(restaurant)
     this.setState({
       center:[this.state.longitude, this.state.latitude],
-      restaurant
-    });
+      restaurant,
+      modals: false,
+      toggle: false
+      });
+      
   };
 
  onStyleLoad = (map) => {
@@ -126,7 +143,12 @@ handleOnChange = (e) => {
         reviews: [],
       },
     })
-    this.handtoggle()
+    if(this.state.newRestuarant){
+      this.handtoggle()
+    }else{
+      return null
+    }
+
   }
     saveRestuarant = () => {
     this.setState(prev => ({
@@ -165,7 +187,7 @@ handleOnChange = (e) => {
         style="mapbox://styles/mapbox/streets-v9"
         containerStyle={{
           height: '140vh',
-          width: '64vw',
+          width: '66vw',
         }}
         >
         <div className="sidebarStyle">
@@ -173,12 +195,12 @@ handleOnChange = (e) => {
             Longitude: {this.state.longitude} | Latitude: {this.state.latitude} | Zoom:
             {this.state.zoom}
           </div>
-        
+       
         </div>
 
         <Layer type="symbol" id="marker" layout={layoutLayer} images={images}>
           {data.map((item, index) =>
-          <Feature coordinates={[item.longitude, item.latitude]} 
+          <Feature key={item.id} coordinates={[item.longitude, item.latitude]} 
           key={index}
           onClick={() => this.markerClick(item)}
           />
@@ -202,18 +224,20 @@ handleOnChange = (e) => {
                   value={addReview} onChange={this.onNameChange}
                   className="form-control mb-1"
                   type="text"
+                  name="addReview"
                   placeholder="Add your review"
                 />
                 <input
                 value={addRatings} onChange={this.onNameChange}
                 className="form-control mb-1"
                 type="number"
+                name="addRatings"
                 placeholder="Add your rating"
               />
                 <button className="btn btn-success btn-block" onClick={this.addItem}>Add</button>
               </div>
             {restaurant.reviews && restaurant.reviews.length ? restaurant.reviews.map(item => 
-              <li>
+              <li key={item.id}>
                   {item.title} <MdStar />
                   {item.rating}
                 </li>
