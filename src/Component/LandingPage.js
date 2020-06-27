@@ -45,12 +45,12 @@ class LandingPage extends React.Component {
     
   componentDidMount() {
     fetch("https://tripadvisor1.p.rapidapi.com/restaurants/list?restaurant_tagcategory_standalone=10591&lunit=km&restaurant_tagcategory=10591&limit=30&currency=USD&lang=en_US&location_id=293919", {
-	"method": "GET",
-	"headers": {
-		"x-rapidapi-host": "tripadvisor1.p.rapidapi.com",
-		"x-rapidapi-key": "c25632a82cmshe1eea9b7f4ebb7ep15df2ejsn56f040c948d9"
-	}
-})
+      "method": "GET",
+      "headers": {
+        "x-rapidapi-host": "tripadvisor1.p.rapidapi.com",
+        "x-rapidapi-key": "116c2bb966mshd64fa6a42cc8e5bp10a7fajsncf0effb5a79d"
+      }
+    })
 .then(raw => raw.json())
 .then(response => this.setState({data:response.data}))
 .catch(err => {
@@ -59,8 +59,8 @@ class LandingPage extends React.Component {
   }
 
   render() {
-    const dataComponent = [];
-    this.state.data.forEach((item) => {
+    let dataComponent = [];
+    this.state.data.forEach( item => {
       if (
         item.address && item.address.toLowerCase().indexOf(this.state.address.toLowerCase()) ===
         -1
@@ -74,8 +74,8 @@ class LandingPage extends React.Component {
           picture={item.photo && item.photo.images.small.url}
           reviews={item.reviews}
         />,
-      );
-    });
+      )
+    })
 
     return (
       <div
@@ -123,6 +123,7 @@ class LandingPage extends React.Component {
         </Card>
 
         <div className="justify-content-between d-flex">
+          
           <div className="mt-2 m-0">
             {dataComponent}
           </div>
