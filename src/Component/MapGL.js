@@ -146,6 +146,7 @@ handleOnChange = (e) => {
   };
 saveRestaurant = () => {
   this.props.saveRestuarant(this.state.newRestuarant)
+  this.handtoggle()
 }
  
   render() {

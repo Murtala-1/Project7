@@ -4,13 +4,14 @@ import { GiPositionMarker } from 'react-icons/gi';
 import { MdStar } from 'react-icons/md';
 import { MdModeComment } from 'react-icons/md';
 
+
 function RestaurantList(props) {
   const styles = {
     width: '200px',
     height: '100px'
   }
   return (
-    
+   
       <Card style={{ width: 500, height: 'auto' }} >
         <div className="justify-content-between d-flex">
           <div >
@@ -39,7 +40,7 @@ function RestaurantList(props) {
           </div>
         </div>
       </Card>
-   
+      
   );
 }
 

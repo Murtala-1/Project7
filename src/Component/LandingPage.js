@@ -14,6 +14,7 @@ import NavBar from './NavBar';
 import RestaurantList from './RestaurantList';
 import { FaSearchLocation } from 'react-icons/fa';
 import MapGL from './MapGL'
+import FreeScrollBar from 'react-free-scrollbar';
 
 class LandingPage extends React.Component {
   state = {
@@ -124,9 +125,11 @@ class LandingPage extends React.Component {
 
         <div className="justify-content-between d-flex">
           
-          <div className="mt-2 m-0">
+        <div className="mt-3" style={{width: '33em', height: '68em'}}>
+    <FreeScrollBar>
             {dataComponent}
-          </div>
+            </FreeScrollBar>
+      </div>  
           <div className='mt-5' >
             <Card>
               <MapGL 
