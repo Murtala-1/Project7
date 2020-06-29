@@ -116,7 +116,7 @@ class LandingPage extends React.Component {
                   <Input
                     type="number"
                     name="rating"
-                    placeholder="Search by overall rating"
+                    placeholder="Search best rating of the restaurant around you"
                     value={this.state.rating}
                     onChange={(e) => this.updateRating(e.target.value)}
                   />

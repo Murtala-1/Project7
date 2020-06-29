@@ -43,7 +43,10 @@ class MapGL extends React.Component {
     newRestuarantName: '',
     newRestuarantAddress: '', 
     newRestuarant: {},
-    userLocation: {}
+    userLocation: {
+      longitude: 0,
+    latitude: 0,
+    }
 
   };
 
@@ -164,10 +167,11 @@ saveRestaurant = () => {
 //       });
 //     }
 handleUserLocation = (position)=>{
+  // console.log('',position)
   this.setState({
     userLocation: {
-     Latitude: position.coords.latitude,
-     Longitude: position.coords.longitude
+    latitude: position.coords.latitude,
+    longitude: position.coords.longitude
     }
   })
 }
@@ -183,7 +187,7 @@ componentDidMount() {
     image.src=`${require('../marker.png')}`
     const images= ['marker', image];
     const layoutLayer = { 'icon-image': 'marker' }
-    const { modals, addReview, toggle, restaurant, data, addRatings } = this.state;
+    const { modals, addReview, toggle, restaurant, userLocation, addRatings } = this.state;
     return (
       <Map
         onClick={this._onClickMap}
@@ -197,16 +201,18 @@ componentDidMount() {
         >
         <div className="sidebarStyle">
           <div>
-            {JSON.stringify(this.state.userLocation)}
             Longitude: {this.state.longitude} | Latitude: {this.state.latitude} | Zoom:
             {this.state.zoom}
           </div>
-       
+       {/* {JSON.stringify(userLocation)} */}
         </div>
-        <Marker
-         coordinates={[this.state.userLocation.Longitude, this.state.userLocation.Latitude]} anchor="bottom">
-         <img src={markerUrl}/>
+         <Marker
+         coordinates={[userLocation.longitude, userLocation.latitude]} anchor="bottom"
+         center={[userLocation.longitude, userLocation.latitude]}
+         >
+         <img src={require('../marker2.png')} width="50px"/>
          </Marker>
+        
         <Layer type="symbol" id="marker" layout={layoutLayer} images={images}>
           {this.props.data.map((item, index) =>
           <Feature key={item.id} coordinates={[item.longitude, item.latitude]} 
@@ -224,7 +230,10 @@ componentDidMount() {
             style={StyledPopup}
            >
               
-            <div>
+            <div > 
+            <button type="button" class="close" aria-label="Close" onClick={()=> this.setState({restaurant: undefined})}>
+            <span aria-hidden="true">&times;</span>
+          </button>
               <img src={restaurant.photo.images.small.url} width="193px" height="250" />
               <h4>{restaurant.name} </h4>
               <p> {restaurant._address}</p>
