@@ -18,20 +18,20 @@ import FreeScrollBar from 'react-free-scrollbar';
 
 class LandingPage extends React.Component {
   state = {
-    address: '',
+    rating: '',
     data: [],
     restaurant : '',
     modals: false,
   };
   handleSummit = (e) => {
     this.setState({
-      address: e.address,
+      rating: e.rating,
       
     });
   };
-  updateAddress = (address) => {
+  updateRating = (rating) => {
     this.setState(() => ({
-      address: address.trim()
+      rating: rating.trim()
     }));
   };
   saveRestuarant = (newRestuarant) => {
@@ -43,27 +43,38 @@ class LandingPage extends React.Component {
       modals : false
     }))
     }
+
+    // _locateUser = () => {
+    //   navigator.geolocation.getCurrentPosition(position => {
+    //     this.updateViewport({
+    //       longitude: position.coords.longitude,
+    //       latitude: position.coords.latitude
+    //     });
+    //   });
+    // }
     
   componentDidMount() {
-    fetch("https://tripadvisor1.p.rapidapi.com/restaurants/list?restaurant_tagcategory_standalone=10591&lunit=km&restaurant_tagcategory=10591&limit=30&currency=USD&lang=en_US&location_id=293919", {
-      "method": "GET",
-      "headers": {
-        "x-rapidapi-host": "tripadvisor1.p.rapidapi.com",
-        "x-rapidapi-key": "116c2bb966mshd64fa6a42cc8e5bp10a7fajsncf0effb5a79d"
-      }
-    })
-.then(raw => raw.json())
-.then(response => this.setState({data:response.data}))
-.catch(err => {
-	console.log(err);
-});
-  }
+//     fetch("https://tripadvisor1.p.rapidapi.com/restaurants/list?restaurant_tagcategory_standalone=10591&lunit=km&restaurant_tagcategory=10591&limit=30&currency=USD&lang=en_US&location_id=293919", {
+//       "method": "GET",
+//       "headers": {
+//         "x-rapidapi-host": "tripadvisor1.p.rapidapi.com",
+//         "x-rapidapi-key": "116c2bb966mshd64fa6a42cc8e5bp10a7fajsncf0effb5a79d"
+//       }
+//     })
+// .then(raw => raw.json())
+// .then(response => this.setState({data:response.data}))
+// .catch(err => {
+// 	console.log(err);
+// });
+// this._locateUser()
+}
+
 
   render() {
     let dataComponent = [];
     this.state.data.forEach( item => {
       if (
-        item.address && item.address.toLowerCase().indexOf(this.state.address.toLowerCase()) ===
+        item.rating && item.rating.toLowerCase().indexOf(this.state.rating.toLowerCase()) ===
         -1
       )
         return;
@@ -103,12 +114,11 @@ class LandingPage extends React.Component {
                 {/* {JSON.stringify(this.state.data)} */}
                 <FormGroup>
                   <Input
-                    type="text"
-                    name="address"
-                    id="exampleAddress"
-                    placeholder="Enter your Address"
-                    value={this.state.address}
-                    onChange={(e) => this.updateAddress(e.target.value)}
+                    type="number"
+                    name="rating"
+                    placeholder="Search by overall rating"
+                    value={this.state.rating}
+                    onChange={(e) => this.updateRating(e.target.value)}
                   />
                 </FormGroup>
               </Col>

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactMapboxGl, {
-  Layer, Feature,
+  Layer, Feature,Marker,
   Popup,
   ZoomControl,
   RotationControl,
@@ -28,6 +28,8 @@ const StyledPopup = {
 
 class MapGL extends React.Component {
   state = {
+    width: "100vw",
+    height: "100vh",
     longitude: 100.869281,
     latitude: 12.906024,
     loading: true,
@@ -40,9 +42,11 @@ class MapGL extends React.Component {
     addRatings: '',
     newRestuarantName: '',
     newRestuarantAddress: '', 
-    newRestuarant: {}
+    newRestuarant: {},
+    userLocation: {}
 
   };
+
 handleOnChange = (e) => {
   const {name, value} = e.target
   this.setState( prev => ({
@@ -93,7 +97,7 @@ handleOnChange = (e) => {
     this.setState({
       newRestuarant : {
         name: '',
-        address: '',
+        _address: '',
         latitude: evt.lngLat.wrap().lat,
         longitude: evt.lngLat.wrap().lng,
         photo: {
@@ -106,10 +110,13 @@ handleOnChange = (e) => {
         reviews: [],
       },
     })
-    
-      this.handtoggle()
-    
-  }
+   
+    if(this.state.restaurant === undefined ){ 
+      return this.handtoggle()
+    }else{
+      return null
+    }
+      }
   reviewsReset = () => {
     this.setState({
       addReview : '',
@@ -148,7 +155,29 @@ saveRestaurant = () => {
   this.props.saveRestuarant(this.state.newRestuarant)
   this.handtoggle()
 }
- 
+// _locateUser = () => {
+//       navigator.geolocation.getCurrentPosition(position => {
+//         this.updateViewport({
+//           longitude: position.coords.longitude,
+//           latitude: position.coords.latitude
+//         });
+//       });
+//     }
+handleUserLocation = (position)=>{
+  this.setState({
+    userLocation: {
+     Latitude: position.coords.latitude,
+     Longitude: position.coords.longitude
+    }
+  })
+}
+componentDidMount() {
+  navigator.geolocation.getCurrentPosition((position) => {
+    console.log("Latitude is :", position.coords.latitude);
+    console.log("Longitude is :", position.coords.longitude);
+    this.handleUserLocation(position)
+  });
+}
   render() {
     const image = new Image();
     image.src=`${require('../marker.png')}`
@@ -168,12 +197,16 @@ saveRestaurant = () => {
         >
         <div className="sidebarStyle">
           <div>
+            {JSON.stringify(this.state.userLocation)}
             Longitude: {this.state.longitude} | Latitude: {this.state.latitude} | Zoom:
             {this.state.zoom}
           </div>
        
         </div>
-
+        <Marker
+         coordinates={[this.state.userLocation.Longitude, this.state.userLocation.Latitude]} anchor="bottom">
+         <img src={markerUrl}/>
+         </Marker>
         <Layer type="symbol" id="marker" layout={layoutLayer} images={images}>
           {this.props.data.map((item, index) =>
           <Feature key={item.id} coordinates={[item.longitude, item.latitude]} 
@@ -194,7 +227,7 @@ saveRestaurant = () => {
             <div>
               <img src={restaurant.photo.images.small.url} width="193px" height="250" />
               <h4>{restaurant.name} </h4>
-              <p> {restaurant.address}</p>
+              <p> {restaurant._address}</p>
               <div className="">
                 <input
                   value={addReview} onChange={this.onNameChange}
@@ -225,6 +258,7 @@ saveRestaurant = () => {
           </Popup>
          
         )} 
+      
         <Modal isOpen={modals} toggle={this.handtoggle} >
         <ModalHeader toggle={this.handtoggle}>Add Restuarant</ModalHeader>
         <ModalBody>
@@ -239,10 +273,10 @@ saveRestaurant = () => {
       </FormGroup>
       <FormGroup row>
         <Col sm={10}>
-          <Input type="address" 
-          name="address" 
+          <Input type="_address" 
+          name="_address" 
           onChange={this.handleOnChange} 
-          value={this.state.newRestuarant.address}
+          value={this.state.newRestuarant._address}
           placeholder="Restuarant Address" />
         </Col>
       </FormGroup>
