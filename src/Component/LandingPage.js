@@ -43,30 +43,20 @@ class LandingPage extends React.Component {
       modals : false
     }))
     }
-
-    // _locateUser = () => {
-    //   navigator.geolocation.getCurrentPosition(position => {
-    //     this.updateViewport({
-    //       longitude: position.coords.longitude,
-    //       latitude: position.coords.latitude
-    //     });
-    //   });
-    // }
     
   componentDidMount() {
-//     fetch("https://tripadvisor1.p.rapidapi.com/restaurants/list?restaurant_tagcategory_standalone=10591&lunit=km&restaurant_tagcategory=10591&limit=30&currency=USD&lang=en_US&location_id=293919", {
-//       "method": "GET",
-//       "headers": {
-//         "x-rapidapi-host": "tripadvisor1.p.rapidapi.com",
-//         "x-rapidapi-key": "116c2bb966mshd64fa6a42cc8e5bp10a7fajsncf0effb5a79d"
-//       }
-//     })
-// .then(raw => raw.json())
-// .then(response => this.setState({data:response.data}))
-// .catch(err => {
-// 	console.log(err);
-// });
-// this._locateUser()
+    fetch("https://tripadvisor1.p.rapidapi.com/restaurants/list?restaurant_tagcategory_standalone=10591&lunit=km&restaurant_tagcategory=10591&limit=30&currency=USD&lang=en_US&location_id=293919", {
+      "method": "GET",
+      "headers": {
+        "x-rapidapi-host": "tripadvisor1.p.rapidapi.com",
+        "x-rapidapi-key": "116c2bb966mshd64fa6a42cc8e5bp10a7fajsncf0effb5a79d"
+      }
+    })
+.then(raw => raw.json())
+.then(response => this.setState({data:response.data}))
+.catch(err => {
+	console.log(err);
+});
 }
 
 

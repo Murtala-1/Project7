@@ -126,6 +126,7 @@ handleOnChange = (e) => {
       addRatings : ''
     })
   }
+
   addItem = () => {
     const { addReview, restaurant, addRatings } = this.state;
     
@@ -154,18 +155,12 @@ handleOnChange = (e) => {
     }
     this.reviewsReset()
   };
-saveRestaurant = () => {
+
+  saveRestaurant = () => {
   this.props.saveRestuarant(this.state.newRestuarant)
   this.handtoggle()
 }
-// _locateUser = () => {
-//       navigator.geolocation.getCurrentPosition(position => {
-//         this.updateViewport({
-//           longitude: position.coords.longitude,
-//           latitude: position.coords.latitude
-//         });
-//       });
-//     }
+
 handleUserLocation = (position)=>{
   // console.log('',position)
   this.setState({
