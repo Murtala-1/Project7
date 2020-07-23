@@ -96,7 +96,7 @@ handleOnChange = (e) => {
     }
   };
 
-  _onClickMap = (map, evt)=> {  
+  _onClickMap = (_map, evt)=> {  
     this.setState({
       newRestuarant : {
         name: '',
@@ -182,7 +182,7 @@ componentDidMount() {
     image.src=`${require('../marker.png')}`
     const images= ['marker', image];
     const layoutLayer = { 'icon-image': 'marker' }
-    const { modals, addReview, toggle, restaurant, userLocation, addRatings } = this.state;
+    const { modals, addReview,restaurant, userLocation, addRatings } = this.state;
     return (
       <Map
         onClick={this._onClickMap}
@@ -205,13 +205,13 @@ componentDidMount() {
          coordinates={[userLocation.longitude, userLocation.latitude]} anchor="bottom"
          center={[userLocation.longitude, userLocation.latitude]}
          >
-         <img src={require('../marker2.png')} width="50px"/>
+         <image src={require('../marker2.png')} width="50px" alt="marker"/>
          </Marker>
         
-        <Layer type="symbol" id="marker" layout={layoutLayer} images={images}>
+      <Layer type="symbol" id="marker" layout={layoutLayer} images={images}>
           {this.props.data.map((item, index) =>
           <Feature key={item.id} coordinates={[item.longitude, item.latitude]} 
-          key={index}
+          // key={index}
           onClick={() => this.markerClick(item)}
           />
           )}
@@ -229,7 +229,7 @@ componentDidMount() {
             <button type="button" class="close" aria-label="Close" onClick={()=> this.setState({restaurant: undefined})}>
             <span aria-hidden="true">&times;</span>
           </button>
-              <img src={restaurant.photo.images.small.url} width="193px" height="250" />
+              <image src={restaurant.photo.images.small.url} width="193px" height="250" alt="res image"/>
               <h4>{restaurant.name} </h4>
               <p> {restaurant._address}</p>
               <div className="">

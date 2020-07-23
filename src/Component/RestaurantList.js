@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card } from 'reactstrap';
+import { Row, Card } from 'reactstrap';
 import { GiPositionMarker } from 'react-icons/gi';
 import { MdStar } from 'react-icons/md';
 import { MdModeComment } from 'react-icons/md';
