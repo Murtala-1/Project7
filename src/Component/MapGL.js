@@ -9,7 +9,6 @@ import { MdStar } from 'react-icons/md';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Col, FormGroup, Input  } from 'reactstrap';
 
 
-
 const Map = ReactMapboxGl({
   accessToken:
     'pk.eyJ1IjoiYWtpbnllbWkxNDcyIiwiYSI6ImNrMXoyNW92dDBsZ2UzaG12Mm9xNGhmdGcifQ.RlIm2uIf_39XH1hbaG4C7A',
@@ -185,10 +184,11 @@ componentDidMount() {
     const { modals, addReview,restaurant, userLocation, addRatings } = this.state;
     return (
       <Map
+      // eslint-disable-next-line
+        style="mapbox://styles/mapbox/streets-v8"
         onClick={this._onClickMap}
         onStyleLoad={this.onMapLoad}
         center={[this.state.longitude, this.state.latitude]}
-        style="mapbox://styles/mapbox/streets-v9"
         containerStyle={{
           height: '140vh',
           width: '66vw',
